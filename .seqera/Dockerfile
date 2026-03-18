@@ -1,7 +1,5 @@
-ARG CONNECT_CLIENT_VERSION
-# NOTE: cr.seqera.io/public/connect-client are where development snapshot and rc images are located
-# When building custom images - use the public.cr.seqera.io/platform/connect-client repository for production connect-client version
-FROM cr.seqera.io/public/connect-client:${CONNECT_CLIENT_VERSION}-snapshot AS connect
+ARG CONNECT_CLIENT_VERSION=0.11
+FROM public.cr.seqera.io/platform/connect-client:${CONNECT_CLIENT_VERSION} AS connect
 
 FROM mambaorg/micromamba:1.5.10-noble AS micromamba
 
