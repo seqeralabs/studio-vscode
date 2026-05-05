@@ -1,4 +1,4 @@
-ARG CONNECT_CLIENT_VERSION=0.11
+ARG CONNECT_CLIENT_VERSION=0.12
 FROM public.cr.seqera.io/platform/connect-client:${CONNECT_CLIENT_VERSION} AS connect
 
 FROM mambaorg/micromamba:1.5.10-noble AS micromamba
