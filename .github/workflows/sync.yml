@@ -16,10 +16,10 @@ on:
         required: true
         type: string
       templates_ref:
-        description: "studio-templates ref (branch/tag/SHA). Default: main."
+        description: "studio-templates ref (branch/tag/SHA). Default: master."
         required: false
         type: string
-        default: "main"
+        default: "master"
 
 jobs:
   sync:
