@@ -35,5 +35,5 @@ To create a customized version:
 The pre-built image is available at:
 
 ```
-public.cr.seqera.io/platform/data-studio-vscode:1.101.2-0.12
+public.cr.seqera.io/platform/data-studio-vscode:1.101.2-0.12.1
 ```
