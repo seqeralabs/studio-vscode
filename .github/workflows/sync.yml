@@ -23,7 +23,7 @@ on:
 
 jobs:
   sync:
-    uses: seqeralabs/studio-templates/.github/workflows/sync-studio-tool.yml@feat/phase-1-2-integration-with-tool-repo
+    uses: seqeralabs/studio-templates/.github/workflows/sync-studio-tool.yml@master
     with:
       image: "data-studio-vscode"
       tool_version: ${{ inputs.tool_version }}
