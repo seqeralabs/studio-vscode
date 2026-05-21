@@ -1,7 +1,7 @@
-ARG CONNECT_CLIENT_VERSION=0.12
+ARG CONNECT_CLIENT_VERSION=0.12.0
 FROM public.cr.seqera.io/platform/connect-client:${CONNECT_CLIENT_VERSION} AS connect
 
-FROM mambaorg/micromamba:1.5.10-noble AS micromamba
+FROM mambaorg/micromamba:2.5.0 AS micromamba
 
 FROM ubuntu:24.04
 
@@ -33,18 +33,15 @@ RUN apt-get update --yes && apt-get install --yes --no-install-recommends \
 COPY --from=micromamba "$MAMBA_EXE" "$MAMBA_EXE"
 COPY --from=micromamba /usr/local/bin/_activate_current_env.sh /usr/local/bin/_activate_current_env.sh
 COPY --from=micromamba /usr/local/bin/_dockerfile_shell.sh /usr/local/bin/_dockerfile_shell.sh
+COPY --from=micromamba /usr/local/bin/_entrypoint.sh /usr/local/bin/_entrypoint.sh
 COPY --from=micromamba /usr/local/bin/_dockerfile_initialize_user_accounts.sh /usr/local/bin/_dockerfile_initialize_user_accounts.sh
 COPY --from=micromamba /usr/local/bin/_dockerfile_setup_root_prefix.sh /usr/local/bin/_dockerfile_setup_root_prefix.sh
 
 RUN /usr/local/bin/_dockerfile_initialize_user_accounts.sh && \
     /usr/local/bin/_dockerfile_setup_root_prefix.sh
 SHELL ["/usr/local/bin/_dockerfile_shell.sh"]
-COPY --chown=$MAMBA_USER:$MAMBA_USER ./docker/vscode_1.101.2/env.yaml /tmp/env.yaml
-# need to have lower ulimit given micromamba issue:
-# https://github.com/mamba-org/micromamba-docker/issues/368#issuecomment-1706054594
-# https://github.com/DaanDeMeyer/reproc/pull/103
-RUN ulimit -n 262144 && \
-    micromamba install --yes --file /tmp/env.yaml && \
+COPY --chown=$MAMBA_USER:$MAMBA_USER ./env.yaml /tmp/env.yaml
+RUN micromamba install --yes --name base --file /tmp/env.yaml && \
     micromamba clean --all --yes
 
 ARG MAMBA_DOCKERFILE_ACTIVATE=1
@@ -88,7 +85,7 @@ RUN ${VSCODE_ROOT}/bin/openvscode-server --install-extension nextflow.nextflow
 # preheat nextflow
 RUN nextflow help > /dev/null
 
-COPY ./docker/vscode_1.101.2/init /init
+COPY ./init /init
 
 # Add connect binary
 COPY --from=connect /usr/bin/connect-client /usr/bin/connect-client
