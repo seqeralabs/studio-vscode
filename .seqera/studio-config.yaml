@@ -4,6 +4,6 @@ session:
     description: "Seqera Studio Vscode"
     template:
         kind: "registry"
-        registry: "public.cr.seqera.io/platform/data-studio-vscode:1.101.2-0.12.2"
+        registry: "public.cr.seqera.io/platform/data-studio-vscode:1.105.1-0.13.0"
         # kind: "dockerfile"        <-- uncomment if you want to customize the image
         # dockerfile: "Dockerfile"  <-- path to your custom Dockerfile
