@@ -12,7 +12,7 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
-ARG CONNECT_CLIENT_VERSION=0.13.0
+ARG CONNECT_CLIENT_VERSION=0.14.0
 FROM public.cr.seqera.io/platform/connect-client:${CONNECT_CLIENT_VERSION} AS connect
 
 FROM mambaorg/micromamba:2.8.1-ubuntu24.04 AS micromamba
@@ -75,21 +75,6 @@ RUN if [ ${TARGETARCH} = "amd64" ]; then \
     cp ${VSCODE_ROOT}/bin/remote-cli/openvscode-server ${VSCODE_ROOT}/bin/remote-cli/code && \
     rm -f openvscode-server-${VSCODE_RELEASE}-linux-${ARCH}.tar.gz
 
-
-# install docker
-RUN install -m 0755 -d /etc/apt/keyrings && \
-    curl -fsSL https://download.docker.com/linux/ubuntu/gpg -o /etc/apt/keyrings/docker.asc && \
-    chmod a+r /etc/apt/keyrings/docker.asc  && \
-    echo \
-    "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.asc] https://download.docker.com/linux/ubuntu \
-    $(. /etc/os-release && echo "${UBUNTU_CODENAME:-$VERSION_CODENAME}") stable" | \
-    tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-    apt-get update --yes && \
-    apt-get install --yes docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin && \
-    apt-get clean && rm -rf /var/lib/apt/lists/*
-# patch service so that it can work inside docker
-RUN sed -i 's/ulimit -Hn \([0-9]\+\)/ulimit -n \1/' /etc/init.d/docker # patch the
-
 WORKDIR /workspace
 
 
@@ -117,7 +102,7 @@ COPY ./init /init
 # Add connect binary
 COPY --from=connect /usr/bin/connect-client /usr/bin/connect-client
 # Install connect dependencies
-RUN /usr/bin/connect-client --install
+RUN /usr/bin/connect-client --install --with-docker
 # Optionally set tool identifier for metrics tracking purposes
 RUN /usr/bin/connect-client --setToolIdentifier vscode
 
